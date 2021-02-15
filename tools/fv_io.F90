@@ -976,8 +976,8 @@ contains
     type(fv_atmos_type), intent(inout) :: Atm
     character(len=*),    intent(in), optional :: timestamp
 
-    call save_restart_border(Atm%neststruct%BCfile_ne, timestamp)
-    call save_restart_border(Atm%neststruct%BCfile_sw, timestamp)
+    !call save_restart_border(Atm%neststruct%BCfile_ne, timestamp)
+    !call save_restart_border(Atm%neststruct%BCfile_sw, timestamp)
 
     return
   end subroutine fv_io_write_BCs
