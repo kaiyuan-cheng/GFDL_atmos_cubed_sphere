@@ -449,19 +449,24 @@ contains
 #endif
       endif
       if (flagstruct%regional) then
+        call timing_on('COMM_TOTAL')
+
         reg_bc_update_time=current_time_in_seconds+bdt*(n_map-1)+(0.5+(it-1))*dt
         call regional_boundary_update(delpc, 'delp', &
                                       isd, ied, jsd, jed, npz, &
                                       is,  ie,  js,  je,       &
                                       isd, ied, jsd, jed,      &
                                       reg_bc_update_time )
+        call mpp_update_domains(delpc, domain, complete=.true.)
 #ifndef SW_DYNAMICS
         call regional_boundary_update(ptc, 'pt', &
                                       isd, ied, jsd, jed, npz, &
                                       is,  ie,  js,  je,       &
                                       isd, ied, jsd, jed,      &
                                       reg_bc_update_time )
+        call mpp_update_domains(ptc, domain, complete=.true.)
 #endif
+        call timing_off('COMM_TOTAL')
       endif
       if ( hydrostatic ) then
            call geopk(ptop, pe, peln, delpc, pkc, gz, phis, ptc, q_con, pkz, npz, akap, .true., &
@@ -597,8 +602,7 @@ contains
       end if
 
       if (flagstruct%regional) then
-
-        !call exch_uv(domain, bd, npz, vc, uc)
+        call timing_on('COMM_TOTAL')
         call mpp_update_domains(uc, vc, domain, gridtype=CGRID_NE)
 
         reg_bc_update_time=current_time_in_seconds+bdt*(n_map-1)+(0.5+(it-1))*dt
@@ -620,6 +624,7 @@ contains
                                       is,  ie,  js,  je,       &
                                       isd, ied, jsd, jed,      &
                                       reg_bc_update_time )
+        call timing_off('COMM_TOTAL')
       endif
 
     if ( flagstruct%inline_q ) then
@@ -850,18 +855,21 @@ contains
 
     end if
     if (flagstruct%regional) then
+      call timing_on('COMM_TOTAL')
       reg_bc_update_time=current_time_in_seconds+bdt*(n_map-1)+(it-1)*dt
       call regional_boundary_update(delp, 'delp', &
                                     isd, ied, jsd, jed, npz, &
                                     is,  ie,  js,  je,       &
                                     isd, ied, jsd, jed,      &
                                     reg_bc_update_time )
+      call mpp_update_domains(delp, domain, complete=.true.)
 #ifndef SW_DYNAMICS
       call regional_boundary_update(pt, 'pt', &
                                     isd, ied, jsd, jed, npz, &
                                     is,  ie,  js,  je,       &
                                     isd, ied, jsd, jed,      &
                                     reg_bc_update_time )
+      call mpp_update_domains(pt, domain, complete=.true.)
 
 #ifdef USE_COND
       call regional_boundary_update(q_con, 'q_con', &
@@ -869,9 +877,11 @@ contains
                                     is,  ie,  js,  je,       &
                                     isd, ied, jsd, jed,      &
                                     reg_bc_update_time )
+      call mpp_update_domains(q_con, domain, complete=.true.)
 #endif
 
 #endif
+      call timing_off('COMM_TOTAL')
     endif
      if ( hydrostatic ) then
           call geopk(ptop, pe, peln, delp, pkc, gz, phis, pt, q_con, pkz, npz, akap, .false., &
@@ -1081,7 +1091,7 @@ contains
     endif
 
 #ifndef ROT3
-    if ( it/=n_split)   &
+    if ( .not. flagstruct%regional .and. it/=n_split )   &
          call start_group_halo_update(i_pack(8), u, v, domain, gridtype=DGRID_NE)
 #endif
                                                      call timing_off('COMM_TOTAL')
@@ -1162,7 +1172,7 @@ contains
       end if
 
       if (flagstruct%regional) then
-
+         call timing_on('COMM_TOTAL')
 #ifndef SW_DYNAMICS
          if (.not. hydrostatic) then
            reg_bc_update_time=current_time_in_seconds+bdt*(n_map-1)+it*dt
@@ -1186,6 +1196,11 @@ contains
                                        reg_bc_update_time )
 
          call mpp_update_domains(u, v, domain, gridtype=DGRID_NE)
+#ifndef ROT3
+         if (it/=n_split)   &
+            call start_group_halo_update(i_pack(8), u, v, domain, gridtype=DGRID_NE)
+#endif
+         call timing_off('COMM_TOTAL')
       end if
 
       if ( do_diag_debug_dyn ) then
