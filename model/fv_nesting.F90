@@ -2370,10 +2370,23 @@ subroutine twoway_nesting(Atm, ngrids, grids_on_this_pe, zvir, Time, this_grid)
 
     !if ((.not. parent_grid%neststruct%parent_proc) .and. (.not. neststruct%child_proc)) return
 
-    call mpp_get_data_domain( parent_grid%domain, &
-         isd_p,  ied_p,  jsd_p,  jed_p  )
-    call mpp_get_compute_domain( parent_grid%domain, &
-         isc_p,  iec_p,  jsc_p,  jec_p  )
+    if (neststruct%child_proc) then
+      isd_p = 0
+      ied_p = 0
+      jsd_p = 0
+      jed_p = 0
+      isc_p = 0
+      iec_p = 0
+      jsc_p = 0
+      jec_p = 0
+    else
+
+      call mpp_get_data_domain( parent_grid%domain, &
+           isd_p,  ied_p,  jsd_p,  jed_p  )
+      call mpp_get_compute_domain( parent_grid%domain, &
+           isc_p,  iec_p,  jsc_p,  jec_p  )
+    endif
+
 
     ph2 = parent_grid%ak(1)
     rfcut = max(flagstruct%rf_cutoff, parent_grid%flagstruct%rf_cutoff)
