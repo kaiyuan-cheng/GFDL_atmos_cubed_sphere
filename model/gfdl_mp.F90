@@ -38,6 +38,7 @@ module gfdl_mp_mod
     ! use fms_mod, only: write_version_number, open_namelist_file, &
     ! check_nml_error, file_exist, close_file
     use fv_arrays_mod, only: r_grid
+    use mpp_mod, only: input_nml_file
 
     implicit none
 
@@ -3048,7 +3049,7 @@ end subroutine setupm
 ! =======================================================================
 
 !subroutine gfdl_mp_init (id, jd, kd, axes, time)
-subroutine gfdl_mp_init (me, master, nlunit, input_nml_file, logunit, fn_nml)
+subroutine gfdl_mp_init (me, master, nlunit, logunit, fn_nml)
 
     implicit none
 
@@ -3058,7 +3059,6 @@ subroutine gfdl_mp_init (me, master, nlunit, input_nml_file, logunit, fn_nml)
     integer, intent (in) :: logunit
 
     character (len = 64), intent (in) :: fn_nml
-    character (len = *), intent (in) :: input_nml_file (:)
 
     integer :: ios
     logical :: exists

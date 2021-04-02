@@ -275,8 +275,8 @@ contains
    allocate(pref(npz+1,2), dum1d(npz+1))
 
    if (Atm(mygrid)%flagstruct%do_inline_mp) then
-     call gfdl_mp_init(mpp_pe(), mpp_root_pe(), nlunit, input_nml_file, stdlog(), fn_nml)
-     call cloud_diagnosis_init(nlunit, input_nml_file, stdlog(), fn_nml)
+     call gfdl_mp_init(mpp_pe(), mpp_root_pe(), nlunit, stdlog(), fn_nml)
+     call cloud_diagnosis_init(nlunit, stdlog(), fn_nml)
    endif
 
    call fv_restart(Atm(mygrid)%domain, Atm, dt_atmos, seconds, days, cold_start, Atm(mygrid)%gridstruct%grid_type, mygrid)

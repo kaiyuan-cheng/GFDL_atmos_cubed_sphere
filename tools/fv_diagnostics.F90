@@ -3927,7 +3927,7 @@ contains
           if (present(Time)) then
              call get_date(Time, year, month, day, hour, minute, second)
              if (master) write(*,999) year, month, day, hour, minute, second
-999          format(' Range violation on: ', I04, '/', I02, '/', I02, ' ', I02, ':', I02, ':', I02)
+999          format(' Range violation on: ')
           endif
           if ( present(bad_range) ) then
                bad_range = .true.
@@ -3992,7 +3992,7 @@ contains
           if (present(Time)) then
              call get_date(Time, year, month, day, hour, minute, second)
              if (master) write(*,999) year, month, day, hour, minute, second
-999          format(' Range violation on: ', I04, '/', I02, '/', I02, ' ', I02, ':', I02, ':', I02)
+999          format(' Range violation on: ')
           endif
           if ( present(bad_range) ) then
                bad_range = .true.

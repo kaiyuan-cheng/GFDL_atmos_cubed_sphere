@@ -23,6 +23,7 @@
 ! authors: linjiong zhou and shian - jiann lin
 ! =======================================================================
 module cloud_diagnosis_mod
+    use mpp_mod, only: input_nml_file
 
     implicit none
 
@@ -505,7 +506,7 @@ subroutine cloud_diagnosis (is, ie, ks, ke, lsm, p, delp, t, qw, qi, qr, qs, qg,
 
 end subroutine cloud_diagnosis
 
-subroutine cloud_diagnosis_init (nlunit, input_nml_file, logunit, fn_nml)
+subroutine cloud_diagnosis_init (nlunit, logunit, fn_nml)
 
     implicit none
 
@@ -513,7 +514,6 @@ subroutine cloud_diagnosis_init (nlunit, input_nml_file, logunit, fn_nml)
     integer, intent (in) :: logunit
 
     character (len = 64), intent (in) :: fn_nml
-    character (len = *), intent (in) :: input_nml_file (:)
 
     integer :: ios
     logical :: exists
